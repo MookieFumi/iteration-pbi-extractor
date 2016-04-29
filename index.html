@@ -17,30 +17,20 @@
     <script src="js/functions.js"></script>
     <script src="js/app.ajax.js"></script>
     <script src="js/app.vsoService.js"></script>
+    <script src="js/app.index.js"></script>
     <script>
-    var view = function() {
-        var $form = $("[data-role='form']");
-        return {
-            project: $("select").val(),
-            userName: $form.find("input[name=user]").val(),
-            password: $form.find("input[name=password]").val()
-        };
-    };
-
     $(function() {
         $("[data-role='submit']").on("click", function(e) {
-            var data = view();
-            app.vsoService.getProjects(data.userName, data.password);
+            app.index.projects.get();
         });
 
         $("[data-role='projects']").on("change", "select", function() {
-            var data = view();
-            app.vsoService.getIterations(data.project, data.userName, data.password);
+            app.index.iterations.get();
         });
 
         $("[data-role='iterations']").on("click", "[data-role='iteration']", function() {
-            var data = view();
-            app.vsoService.getWorkItems.call(this, data.project, data.userName, data.password);
+            var path = $(this).data().path;
+            app.index.workItems.get(path);
         });
     });
     </script>
@@ -96,12 +86,12 @@
                     <div class="row valign-wrapper">
                         <div class="input-field col s4">
                             <i class="material-icons prefix">credit_card</i>
-                            <input id="icon_prefix" type="text" class="validate" name="user" value="miguel.martin@analyticalways.com">
+                            <input id="icon_prefix" type="text" class="validate" name="user" value="">
                             <label for="icon_prefix">VSO User</label>
                         </div>
                         <div class="input-field col s4">
                             <i class="material-icons prefix">credit_card</i>
-                            <input id="icon_prefix" type="password" class="validate" name="password" value="bkmf3qnz5vtbfxy7e6g5ovah3dr2whblkduu2dydpdxwvwiht7oa">
+                            <input id="icon_prefix" type="password" class="validate" name="password" value="">
                             <label for="icon_prefix">VSO Password</label>
                         </div>
                         <div class="col s4">
@@ -112,16 +102,16 @@
                     </div>
                 </form>
             </div>
-            <div class="row hide " data-role='projects'>
+            <div class="row hide" data-role='projects'>
                 <div class="input-field col s12 ">
                     <select name="project ">
                     </select>
                     <label>Select your project</label>
                 </div>
             </div>
-            <div class="row " data-role='iterations'>
+            <div class="row" data-role='iterations'>
             </div>
-            <div class="row " data-role='workItems'>
+            <div class="row" data-role='workItems'>
             </div>
         </div>
     </div>
