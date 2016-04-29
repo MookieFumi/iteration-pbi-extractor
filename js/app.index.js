@@ -19,8 +19,7 @@ app.index = (function() {
             });
         }
     };
-    config.registerHandlebarHelpers();
-
+    
     var projects = {
         append: function(data) {
             var $projects = $("[data-role='projects']");
@@ -112,6 +111,16 @@ app.index = (function() {
             password: $("[data-role='form']").find("input[name=password]").val()
         }
     };
+
+    function loadHandlebarsTemplates(templateName){
+        $.get('templates/' + templateName, function(template, textStatus, jqXhr) {
+            $('body').append(template);
+        });
+    }
+
+    config.registerHandlebarHelpers();
+    loadHandlebarsTemplates('iteration-template.hbs');
+    loadHandlebarsTemplates('workitem-template.hbs');
 
     return {
         iterations: iterations,
