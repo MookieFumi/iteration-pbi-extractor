@@ -3,7 +3,8 @@ registerNS('app');
 app.vsoService = (function() {
     var config = {
         url: {
-            iteration: 'https://analyticalways.visualstudio.com/DefaultCollection/{0}/_apis/work/teamsettings/iterations?api-version=v2.0',
+            project: 'https://analyticalways.visualstudio.com/DefaultCollection/_apis/projects?api-version=2.0',
+            iteration: 'https://analyticalways.visualstudio.com/DefaultCollection/{0}/_apis/work/teamsettings/iterations?api-version=2.0',
             workItemsInIteration: 'https://analyticalways.visualstudio.com/DefaultCollection/{0}/_apis/wit/wiql?api-version=2.0',
             workItemsDetail: 'https://analyticalways.visualstudio.com/DefaultCollection/_apis/wit/workitems?api-version=2.0'
         }
@@ -26,15 +27,36 @@ app.vsoService = (function() {
         });
     })();
 
-    var getAuthorizationHeader = function (userName, password) {
+    var getAuthorizationHeader = function(userName, password) {
         return window.btoa(userName + ":" + password);
     };
 
-    var getIterations = function(collectionName, userName, password) {        
+    var getProjects = function(userName, password) {
         var header = getAuthorizationHeader(userName, password);
-        app.ajax.get(config.url.iteration.replace('{0}', collectionName), header).done(function(data) {
+        $.when(app.ajax.get(config.url.project, header).done(function(data) {
+            var $projects = $("[data-role='projects']");
+            var $select = $projects.find("select");
+            $(data.value).each(function(index, element) {
+                $select.append($('<option>', { value: element.name, text: element.name }));
+            });
+            $select.material_select();
+            $projects.removeClass('hide');
+        }).fail(function(jqxhr, textStatus, error) {
+            var err = textStatus + ", " + error;
+            Materialize.toast('There was a problem retrieving data', 1500, 'rounded');
+        })).then(function (data, textStatus, jqXHR){
+            var project = $(data.value).first().prop("name");
+            app.vsoService.getIterations(project, userName, password);
+        });
+    };
+
+    var getIterations = function(project, userName, password) {
+        var header = getAuthorizationHeader(userName, password);
+        app.ajax.get(config.url.iteration.replace('{0}', project), header).done(function(data) {
             var $iterations = $('[data-role="iterations"]');
             $iterations.empty();
+            var $workitems = $('[data-role="workItems"]');
+            $workitems.empty();
             $(data.value).each(function(index, element) {
                 createIteration($iterations, element);
             });
@@ -44,13 +66,13 @@ app.vsoService = (function() {
         });
     };
 
-    var getWorkItems = function(collectionName, userName, password) {        
+    var getWorkItems = function(project, userName, password) {
         var $this = $(this);
         var iterationPath = $this.data().path;
         var data = JSON.stringify({
-            "query": "SELECT * FROM WorkItems WHERE [System.TeamProject] = '" + collectionName + "' AND ([System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug') AND [System.IterationPath] = '" + iterationPath + "'"
+            "query": "SELECT * FROM WorkItems WHERE [System.TeamProject] = '" + project + "' AND ([System.WorkItemType] = 'Product Backlog Item' OR [System.WorkItemType] = 'Bug') AND [System.IterationPath] = '" + iterationPath + "'"
         });
-        var url = config.url.workItemsInIteration.replace('{0}', collectionName);
+        var url = config.url.workItemsInIteration.replace('{0}', project);
         var header = getAuthorizationHeader(userName, password);
         $.when(app.ajax.post(url, header, data))
             .then(function(data, textStatus, jqXHR) {
@@ -97,6 +119,7 @@ app.vsoService = (function() {
     };
 
     return {
+        getProjects: getProjects,
         getIterations: getIterations,
         getWorkItems: getWorkItems
     }

@@ -2,7 +2,7 @@
      nav,
      [data-role='form'],
      [data-role='iterations'],
-     [data-role='separator'] {
+     [data-role='projects'] {
          display: none !important;
      }
  }
