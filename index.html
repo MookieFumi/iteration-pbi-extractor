@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iteration PBI Extractor</title>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.3.0/js/md5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="js/functions.js"></script>
+    <script src="js/app.ajax.js"></script>
+    <script src="js/app.vsoService.js"></script>
+    <script>
+    var view = function() {
+        var $form = $("[data-role='form']");
+        return {
+            collectionName: $form.find("input[name=collectionName]").val(),
+            userName: $form.find("input[name=user]").val(),
+            password: $form.find("input[name=password]").val()
+        };
+    };
+
+    $(function() {
+        $("[data-role='submit']").on("click", function(e) {
+            var data = view();
+            var collectionName = data.collectionName;
+            if (!collectionName == '') {
+                app.vsoService.getIterations(collectionName, data.userName, data.password);
+                $("[data-role='workItems']").empty();
+            }
+        });
+        $("[data-role='iterations']").on("click", "[data-role='iteration']", function() {
+            var data = view();
+            app.vsoService.getWorkItems.call(this, data.collectionName, data.userName, data.password);
+        });
+    });
+    </script>
+</head>
+
+<body>
+    <script id="iteration-template" type="text/x-handlebars-template">
+        <div class="col s6 m4">
+            <div class="card card-iteration blue-grey darken-1">
+                <div class="card-content card-iteration-content white-text" data-role="iteration" data-path="{{path}}">
+                    <span class="card-title">{{name}}</span>
+                </div>
+                <div class="card-action">
+                    {{fromDateToDate startDate finishDate}}
+                </div>
+            </div>
+        </div>
+    </script>
+    <script id="workitem-template" type="text/x-handlebars-template">
+        <div class="col s6 m4">
+            <div class="card card-workitem">
+                <div class="card-content card-workitem-content" data-role="workItem">
+                    <div class="row">
+                        <div class="col s12">
+                            {{title}}
+                        </div>
+                    </div>
+                    <div class="row" style="position:absolute; bottom: 0px; width: 100%;">
+                        <div class="col s6">
+                            {{#if (is_pbi this 'Product Backlog Item')}}
+                            <i class="material-icons">receipt</i> {{else}}
+                            <i class="material-icons">error</i> {{/if}} {{#if effort}}
+                            <div class="chip">{{effort}}</div>
+                            {{/if}}
+                        </div>
+                        <div class="col s6">
+                            <img class="circle" src="{{imageUrl}}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <nav class="light-red lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Iteration PBI Extractor</a>
+            <!--<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>-->
+        </div>
+    </nav>
+    <div class="container">
+        <div class="section">
+            <div class="row" data-role='form'>
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix">label</i>
+                            <input id="icon_prefix" type="text" class="validate" name="collectionName" value="">
+                            <label for="icon_prefix">VSO Collection name</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix">credit_card</i>
+                            <input id="icon_prefix" type="text" class="validate" name="user" value="">
+                            <label for="icon_prefix">VSO User</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <i class="material-icons prefix">credit_card</i>
+                            <input id="icon_prefix" type="password" class="validate" name="password" value="">
+                            <label for="icon_prefix">VSO Password</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <a class="btn waves-effect waves-light" data-role='submit'>Submit
+                            <i class="material-icons right">send</i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="row" data-role='iterations'>
+            </div>
+            <div data-role='separator'>
+                <hr>
+            </div>
+            <div class="row" data-role='workItems'>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

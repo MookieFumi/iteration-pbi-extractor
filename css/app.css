@@ -1,0 +1,24 @@
+ @media print {
+     nav,
+     [data-role='form'],
+     [data-role='iterations'],
+     [data-role='separator'] {
+         display: none !important;
+     }
+ }
+ 
+ .card-iteration {
+     height: 180px;
+ }
+ 
+ .card-iteration .card-iteration-content {
+     height: 70%;
+ }
+ 
+ .card-workitem {
+     height: 300px;
+ }
+ 
+ .card-workitem .card-workitem-content {
+     height: 100%;
+ }
