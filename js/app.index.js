@@ -19,7 +19,26 @@ app.index = (function() {
             });
         }
     };
-    
+
+    function getAuthorizationHeader(userName, password) {
+        //https://developer.mozilla.org/es/docs/Web/API/WindowBase64/btoa
+        return window.btoa(userName + ":" + password);
+    };
+
+    function getFields() {
+        return {
+            project: $("select").val(),
+            userName: $("[data-role='form']").find("input[name=user]").val(),
+            password: $("[data-role='form']").find("input[name=password]").val()
+        }
+    };
+
+    function loadHandlebarsTemplates(templateName) {
+        $.get('templates/' + templateName, function(template, textStatus, jqXhr) {
+            $('body').append(template);
+        });
+    }
+
     var projects = {
         append: function(data) {
             var $projects = $("[data-role='projects']");
@@ -104,20 +123,6 @@ app.index = (function() {
         }
     };
 
-    function getFields() {
-        return {
-            project: $("select").val(),
-            userName: $("[data-role='form']").find("input[name=user]").val(),
-            password: $("[data-role='form']").find("input[name=password]").val()
-        }
-    };
-
-    function loadHandlebarsTemplates(templateName){
-        $.get('templates/' + templateName, function(template, textStatus, jqXhr) {
-            $('body').append(template);
-        });
-    }
-
     config.registerHandlebarHelpers();
     loadHandlebarsTemplates('iteration-template.hbs');
     loadHandlebarsTemplates('workitem-template.hbs');
@@ -126,6 +131,7 @@ app.index = (function() {
         iterations: iterations,
         workItems: workItems,
         projects: projects,
-        getFields: getFields
+        getFields: getFields,
+        getAuthorizationHeader: getAuthorizationHeader
     };
 }());

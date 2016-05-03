@@ -3,7 +3,7 @@
      [data-role='form'],
      [data-role='iterations'],
      [data-role='projects'] {
-         display: none !important;
+         display: none;
      }
  }
  

@@ -20,7 +20,16 @@
     <script src="js/app.index.js"></script>
     <script>
     $(function() {
+
         $("[data-role='submit']").on("click", function(e) {
+            $.ajaxSetup({
+                beforeSend: function(xhr) {
+                    var fields = app.index.getFields();
+                    var authorization = app.index.getAuthorizationHeader(fields.userName, fields.password);
+                    app.ajax.beforeSend(xhr, authorization);
+                }
+            });
+
             app.index.projects.get();
         });
 
@@ -32,6 +41,7 @@
             var path = $(this).data().path;
             app.index.workItems.get(path);
         });
+
     });
     </script>
 </head>
