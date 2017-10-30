@@ -19,37 +19,16 @@
     <script src="js/app.vsoService.js"></script>
     <script src="js/app.index.js"></script>
     <script>
-    $(function() {
-
-        $("[data-role='submit']").on("click", function(e) {
-            $.ajaxSetup({
-                beforeSend: function(xhr) {
-                    var fields = app.index.getFields();
-                    var authorization = app.index.getAuthorizationHeader(fields.userName, fields.password);
-                    app.ajax.beforeSend(xhr, authorization);
-                }
-            });
-
-            app.index.projects.get();
+        $(function () {
+            app.onInit()
         });
-
-        $("[data-role='projects']").on("change", "select", function() {
-            app.index.iterations.get();
-        });
-
-        $("[data-role='iterations']").on("click", "[data-role='iteration']", function() {
-            var path = $(this).data().path;
-            app.index.workItems.get(path);
-        });
-
-    });
     </script>
 </head>
 
 <body>
     <nav class="light-red lighten-1" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Iteration PBI Extractor</a>
-            <!--<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>-->
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="#" class="brand-logo">Iteration PBI Extractor</a>
         </div>
     </nav>
     <div class="container">
@@ -60,7 +39,7 @@
                         <div class="input-field col s4">
                             <i class="material-icons prefix">credit_card</i>
                             <input id="icon_prefix" type="text" class="validate" name="user" value="">
-                            <label for="icon_prefix">VSO User</label>
+                            <label for="icon_prefix">VSO User or Alias</label>
                         </div>
                         <div class="input-field col s4">
                             <i class="material-icons prefix">credit_card</i>
@@ -69,7 +48,7 @@
                         </div>
                         <div class="col s4">
                             <a class=" btn waves-effect waves-light " data-role='submit'>LogIn
-                            <i class="material-icons right ">send</i>
+                                <i class="material-icons right ">send</i>
                             </a>
                         </div>
                     </div>
@@ -77,9 +56,16 @@
             </div>
             <div class="row hide" data-role='projects'>
                 <div class="input-field col s12 ">
-                    <select name="project ">
+                    <select name="project">
                     </select>
                     <label>Select your project</label>
+                </div>
+            </div>
+            <div class="row hide" data-role='teams'>
+                <div class="input-field col s12 ">
+                    <select name="team">
+                    </select>
+                    <label>Select your team</label>
                 </div>
             </div>
             <div class="row" data-role='iterations'>

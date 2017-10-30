@@ -2,10 +2,32 @@
      nav,
      [data-role='form'],
      [data-role='iterations'],
-     [data-role='projects'] {
+     [data-role='projects'],
+     [data-role='teams'] {
          display: none;
      }
+
+     [data-role='workItemColumn']::after{
+        content: ''; 
+        display: inline-block;        
+        page-break-after: always;
+     }
+
  }
+
+ .area-path {
+    font-size: 12px;
+    font-weight: 300;
+    font-style: italic;
+}
+
+ .iteration-path {
+    font-style: italic;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
  
  .card-iteration {
      height: 180px;
