@@ -15,9 +15,12 @@
                 <div class="row" style="position:absolute; bottom: 0px; width: 100%;">
                     <div class="col s6">
                         {{#if (is_pbi this 'Product Backlog Item')}}
-                        <i class="material-icons">receipt</i> {{else}}
-                        <i class="material-icons">error</i> {{/if}} {{#if effort}}
-                        <div class="chip">{{effort}}</div>
+                        <i class="material-icons">receipt</i> 
+                        {{else}}
+                        <i class="material-icons">bug_report</i> 
+                        {{/if}} 
+                        {{#if effort}}
+                        <span class="new badge grey badge-position" data-badge-caption="">{{effort}}</span>
                         {{/if}}
                     </div>
                     <!-- muestra gravatar -->

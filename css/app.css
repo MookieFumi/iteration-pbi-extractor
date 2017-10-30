@@ -44,3 +44,18 @@
  .card-workitem .card-workitem-content {
      height: 100%;
  }
+
+ span.badge[data-badge-caption]::after {
+    content: " " attr(data-badge-caption);
+}
+
+.badge-position {
+    margin-top: 4px;
+    margin-right: 15px;
+}
+
+.nav-circle{
+    width: 70%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
